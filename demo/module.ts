@@ -71,6 +71,8 @@ import { SummaryRowSimpleComponent } from './summary/summary-row-simple.componen
 import { SummaryRowCustomTemplateComponent } from './summary/summary-row-custom-template.component';
 import { SummaryRowServerPagingComponent } from './summary/summary-row-server-paging.component';
 import { SummaryRowInlineHtmlComponent } from './summary/summary-row-inline-html.component';
+import { CustomCellComponent, MyCellComponent, MyHeaderComponent } from './templates/custom-cell.component';
+import { SummaryRowCustomCellComponent, MySummaryComponent } from './summary/summary-row-custom-cell.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +99,9 @@ import { SummaryRowInlineHtmlComponent } from './summary/summary-row-inline-html
     MultiSelectionComponent,
     InlineTemplatesComponent,
     TemplateRefTemplatesComponent,
+    CustomCellComponent,
+    MyCellComponent,
+    MyHeaderComponent,
     ColumnFlexComponent,
     ColumnToggleComponent,
     ColumnStandardComponent,
@@ -125,7 +130,10 @@ import { SummaryRowInlineHtmlComponent } from './summary/summary-row-inline-html
     SummaryRowCustomTemplateComponent,
     SummaryRowServerPagingComponent,
     SummaryRowInlineHtmlComponent,
+    SummaryRowCustomCellComponent,
+    MySummaryComponent,
   ],
+  entryComponents: [MyCellComponent, MyHeaderComponent, MySummaryComponent],
   imports: [BrowserModule, NgxDatatableModule],
   bootstrap: [AppComponent]
 })

@@ -1,9 +1,14 @@
-import { ChangeDetectorRef, EventEmitter, ElementRef, ViewContainerRef, OnDestroy, DoCheck } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, ElementRef, ViewContainerRef, OnDestroy, DoCheck, Injector, InjectionToken, OnInit } from '@angular/core';
 import { SortDirection } from '../../types';
 import { TableColumn } from '../../types/table-column.type';
 export declare type TreeStatus = 'collapsed' | 'expanded' | 'loading' | 'disabled';
-export declare class DataTableBodyCellComponent implements DoCheck, OnDestroy {
+/**
+ * Injection token that used to pass the cell context to custom components.
+ */
+export declare const DATATABLE_CELL_CONTEXT: InjectionToken<any>;
+export declare class DataTableBodyCellComponent implements DoCheck, OnDestroy, OnInit {
     private cd;
+    private injector;
     displayCheck: (row: any, column?: TableColumn, value?: any) => boolean;
     group: any;
     rowHeight: number;
@@ -29,6 +34,7 @@ export declare class DataTableBodyCellComponent implements DoCheck, OnDestroy {
     onCheckboxChangeFn: any;
     activateFn: any;
     cellContext: any;
+    cellContexInjector: Injector;
     private _isSelected;
     private _sorts;
     private _column;
@@ -39,7 +45,8 @@ export declare class DataTableBodyCellComponent implements DoCheck, OnDestroy {
     private _expanded;
     private _element;
     private _treeStatus;
-    constructor(element: ElementRef, cd: ChangeDetectorRef);
+    constructor(element: ElementRef, cd: ChangeDetectorRef, injector: Injector);
+    ngOnInit(): void;
     ngDoCheck(): void;
     ngOnDestroy(): void;
     checkValueUpdates(): void;

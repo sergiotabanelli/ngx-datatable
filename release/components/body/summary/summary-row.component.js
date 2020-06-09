@@ -46,13 +46,13 @@ var DataTableSummaryRowComponent = /** @class */ (function () {
         this.updateValues();
     };
     DataTableSummaryRowComponent.prototype.updateInternalColumns = function () {
-        this._internalColumns = this.columns.map(function (col) { return (__assign({}, col, { cellTemplate: col.summaryTemplate })); });
+        this._internalColumns = this.columns.map(function (col) { return (__assign({}, col, { cellTemplate: col.summaryTemplate, cellComponent: col.summaryComponent })); });
     };
     DataTableSummaryRowComponent.prototype.updateValues = function () {
         var _this = this;
         this.summaryRow = {};
         this.columns
-            .filter(function (col) { return !col.summaryTemplate; })
+            .filter(function (col) { return !col.summaryTemplate && !col.summaryComponent; })
             .forEach(function (col) {
             var cellsFromSingleColumn = _this.rows.map(function (row) { return row[col.prop]; });
             var sumFunc = _this.getSummaryFunction(col);

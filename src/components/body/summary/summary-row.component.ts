@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, PipeTransform, TemplateRef } from '@angular/core';
+import { Component, Input, OnChanges, PipeTransform, TemplateRef, Type } from '@angular/core';
 
 export interface ISummaryColumn {
   summaryFunc?: (cells: any[]) => any;
   summaryTemplate?: TemplateRef<any>;
+  summaryComponent?: Type<any>;
 
   prop: string;
   pipe?: PipeTransform;
@@ -64,7 +65,8 @@ export class DataTableSummaryRowComponent implements OnChanges {
   private updateInternalColumns() {
     this._internalColumns = this.columns.map(col => ({
       ...col,
-      cellTemplate: col.summaryTemplate
+      cellTemplate: col.summaryTemplate,
+      cellComponent: col.summaryComponent
     }));
   }
 
@@ -72,7 +74,7 @@ export class DataTableSummaryRowComponent implements OnChanges {
     this.summaryRow = {};
 
     this.columns
-      .filter(col => !col.summaryTemplate)
+      .filter(col => !col.summaryTemplate && !col.summaryComponent)
       .forEach(col => {
       const cellsFromSingleColumn = this.rows.map(row => row[col.prop]);
       const sumFunc = this.getSummaryFunction(col);

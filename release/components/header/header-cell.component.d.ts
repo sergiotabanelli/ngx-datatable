@@ -1,7 +1,12 @@
-import { EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { EventEmitter, ChangeDetectorRef, InjectionToken, Injector, OnInit } from '@angular/core';
 import { SortDirection, SortType, SelectionType, TableColumn } from '../../types';
-export declare class DataTableHeaderCellComponent {
+/**
+ * Injection token that used to pass the cell context to custom components.
+ */
+export declare const DATATABLE_HEADER_CELL_CONTEXT: InjectionToken<any>;
+export declare class DataTableHeaderCellComponent implements OnInit {
     private cd;
+    private injector;
     sortType: SortType;
     sortAscendingIcon: string;
     sortDescendingIcon: string;
@@ -31,9 +36,11 @@ export declare class DataTableHeaderCellComponent {
     sortDir: SortDirection;
     selectFn: any;
     cellContext: any;
+    headerContexInjector: Injector;
     private _column;
     private _sorts;
-    constructor(cd: ChangeDetectorRef);
+    constructor(cd: ChangeDetectorRef, injector: Injector);
+    ngOnInit(): void;
     onContextmenu($event: MouseEvent): void;
     calcSortDir(sorts: any[]): any;
     onSort(): void;

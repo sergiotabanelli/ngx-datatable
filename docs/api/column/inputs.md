@@ -43,8 +43,14 @@ Whether the column can automatically resize to fill extra space. Default value: 
 ### `cellTemplate`: `TemplateRef`
 Angular TemplateRef allowing you to author custom body cell templates
 
+### `cellComponent`: `Type<any>`
+Angular Component allowing you to author custom body cell components
+
 ### `headerTemplate`: `TemplateRef`
 Angular TemplateRef allowing you to author custom header cell templates
+
+### `headerComponent`: `Type<any>`
+Angular Component allowing you to author custom header cell components
 
 ### `checkboxable`: `boolean`
 Indicates whether the column should show a checkbox component for selection. Only

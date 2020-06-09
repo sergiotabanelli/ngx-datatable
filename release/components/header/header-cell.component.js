@@ -13,9 +13,14 @@ var core_1 = require("@angular/core");
 var types_1 = require("../../types");
 var utils_1 = require("../../utils");
 var events_1 = require("../../events");
+/**
+ * Injection token that used to pass the cell context to custom components.
+ */
+exports.DATATABLE_HEADER_CELL_CONTEXT = new core_1.InjectionToken('datatable-header-cell-context');
 var DataTableHeaderCellComponent = /** @class */ (function () {
-    function DataTableHeaderCellComponent(cd) {
+    function DataTableHeaderCellComponent(cd, injector) {
         this.cd = cd;
+        this.injector = injector;
         this.sort = new core_1.EventEmitter();
         this.select = new core_1.EventEmitter();
         this.columnContextmenu = new core_1.EventEmitter(false);
@@ -106,7 +111,8 @@ var DataTableHeaderCellComponent = /** @class */ (function () {
     Object.defineProperty(DataTableHeaderCellComponent.prototype, "name", {
         get: function () {
             // guaranteed to have a value by setColumnDefaults() in column-helper.ts
-            return this.column.headerTemplate === undefined ? this.column.name : undefined;
+            return this.column.headerTemplate === undefined &&
+                this.column.headerComponent === undefined ? this.column.name : undefined;
         },
         enumerable: true,
         configurable: true
@@ -141,6 +147,16 @@ var DataTableHeaderCellComponent = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    DataTableHeaderCellComponent.prototype.ngOnInit = function () {
+        var customProviders = !!this.column.customContext &&
+            !!this.column.customContext.headerProviders
+            ? this.column.customContext.headerProviders
+            : [];
+        this.headerContexInjector =
+            core_1.Injector.create({ providers: [{ provide: exports.DATATABLE_HEADER_CELL_CONTEXT,
+                        useValue: this.cellContext }].concat(customProviders),
+                parent: this.injector });
+    };
     DataTableHeaderCellComponent.prototype.onContextmenu = function ($event) {
         this.columnContextmenu.emit({ event: $event, column: this.column });
     };
@@ -269,13 +285,13 @@ var DataTableHeaderCellComponent = /** @class */ (function () {
     DataTableHeaderCellComponent = __decorate([
         core_1.Component({
             selector: 'datatable-header-cell',
-            template: "\n    <div class=\"datatable-header-cell-template-wrap\">\n      <ng-template\n        *ngIf=\"isTarget\"\n        [ngTemplateOutlet]=\"targetMarkerTemplate\"\n        [ngTemplateOutletContext]=\"targetMarkerContext\">\n      </ng-template>\n      <label\n        *ngIf=\"isCheckboxable\"\n        class=\"datatable-checkbox\">\n        <input\n          type=\"checkbox\"\n          [checked]=\"allRowsSelected\"\n          (change)=\"select.emit(!allRowsSelected)\"\n        />\n      </label>\n      <span\n        *ngIf=\"!column.headerTemplate\"\n        class=\"datatable-header-cell-wrapper\">\n        <span\n          class=\"datatable-header-cell-label draggable\"\n          (click)=\"onSort()\"\n          [innerHTML]=\"name\">\n        </span>\n      </span>\n      <ng-template\n        *ngIf=\"column.headerTemplate\"\n        [ngTemplateOutlet]=\"column.headerTemplate\"\n        [ngTemplateOutletContext]=\"cellContext\">\n      </ng-template>\n      <span\n        (click)=\"onSort()\"\n        [class]=\"sortClass\">\n      </span>\n    </div>\n  ",
+            template: "\n    <div class=\"datatable-header-cell-template-wrap\">\n      <ng-template\n        *ngIf=\"isTarget\"\n        [ngTemplateOutlet]=\"targetMarkerTemplate\"\n        [ngTemplateOutletContext]=\"targetMarkerContext\">\n      </ng-template>\n      <label\n        *ngIf=\"isCheckboxable\"\n        class=\"datatable-checkbox\">\n        <input\n          type=\"checkbox\"\n          [checked]=\"allRowsSelected\"\n          (change)=\"select.emit(!allRowsSelected)\"\n        />\n      </label>\n      <span\n        *ngIf=\"!column.headerTemplate && !column.headerComponent\"\n        class=\"datatable-header-cell-wrapper\">\n        <span\n          class=\"datatable-header-cell-label draggable\"\n          (click)=\"onSort()\"\n          [innerHTML]=\"name\">\n        </span>\n      </span>\n      <ng-template\n        *ngIf=\"column.headerTemplate && !column.headerComponent\"\n        [ngTemplateOutlet]=\"column.headerTemplate\"\n        [ngTemplateOutletContext]=\"cellContext\">\n      </ng-template>\n      <ng-container\n      *ngIf=\"column.headerComponent\"\n      [ngComponentOutlet]=\"column.headerComponent\"\n      [ngComponentOutletInjector]=\"headerContexInjector\">\n      </ng-container>\n      <span\n        (click)=\"onSort()\"\n        [class]=\"sortClass\">\n      </span>\n    </div>\n  ",
             host: {
                 class: 'datatable-header-cell'
             },
             changeDetection: core_1.ChangeDetectionStrategy.OnPush
         }),
-        __metadata("design:paramtypes", [core_1.ChangeDetectorRef])
+        __metadata("design:paramtypes", [core_1.ChangeDetectorRef, core_1.Injector])
     ], DataTableHeaderCellComponent);
     return DataTableHeaderCellComponent;
 }());

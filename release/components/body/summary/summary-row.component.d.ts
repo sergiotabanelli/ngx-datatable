@@ -1,7 +1,8 @@
-import { OnChanges, PipeTransform, TemplateRef } from '@angular/core';
+import { OnChanges, PipeTransform, TemplateRef, Type } from '@angular/core';
 export interface ISummaryColumn {
     summaryFunc?: (cells: any[]) => any;
     summaryTemplate?: TemplateRef<any>;
+    summaryComponent?: Type<any>;
     prop: string;
     pipe?: PipeTransform;
 }

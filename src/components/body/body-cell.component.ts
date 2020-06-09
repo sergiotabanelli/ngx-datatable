@@ -1,7 +1,10 @@
 import {
   Component, Input, PipeTransform, HostBinding, ViewChild, ChangeDetectorRef,
   Output, EventEmitter, HostListener, ElementRef, ViewContainerRef, OnDestroy, DoCheck,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  Injector,
+  InjectionToken,
+  OnInit
 } from '@angular/core';
 
 import { Keys } from '../../utils';
@@ -11,6 +14,12 @@ import { MouseEvent, KeyboardEvent } from '../../events';
 import { ContentChild } from '@angular/core/src/metadata/di';
 
 export type TreeStatus = 'collapsed' | 'expanded' | 'loading' | 'disabled';
+
+/**
+ * Injection token that used to pass the cell context to custom components.
+ */
+export const DATATABLE_CELL_CONTEXT =
+    new InjectionToken<any>('datatable-cell-context');
 
 @Component({
   selector: 'datatable-body-cell',
@@ -28,7 +37,7 @@ export type TreeStatus = 'collapsed' | 'expanded' | 'loading' | 'disabled';
         />
       </label>
       <ng-container *ngIf="column.isTreeColumn">
-        <button *ngIf="!column.treeToggleTemplate"
+        <button *ngIf="!column.treeToggleTemplate && !column.treeToggleComponent"
           class="datatable-tree-button"
           [disabled]="treeStatus==='disabled'"
           (click)="onTreeAction()">
@@ -42,26 +51,36 @@ export type TreeStatus = 'collapsed' | 'expanded' | 'loading' | 'disabled';
               class="icon datatable-icon-down"></i>
           </span>
         </button>
-        <ng-template *ngIf="column.treeToggleTemplate"
+        <ng-template *ngIf="column.treeToggleTemplate && !column.treeToggleComponent"
           [ngTemplateOutlet]="column.treeToggleTemplate"
           [ngTemplateOutletContext]="{ cellContext: cellContext }">
         </ng-template>
+        <ng-container
+        *ngIf="column.treeToggleComponent"
+        [ngComponentOutlet]="column.treeToggleComponent"
+        [ngComponentOutletInjector]="cellContexInjector">
+        </ng-container>
       </ng-container>
 
       <span
-        *ngIf="!column.cellTemplate"
+        *ngIf="!column.cellTemplate && !column.cellComponent"
         [title]="sanitizedValue"
         [innerHTML]="value">
       </span>
       <ng-template #cellTemplate
-        *ngIf="column.cellTemplate"
+        *ngIf="column.cellTemplate && !column.cellComponent"
         [ngTemplateOutlet]="column.cellTemplate"
         [ngTemplateOutletContext]="cellContext">
       </ng-template>
+      <ng-container
+      *ngIf="column.cellComponent"
+      [ngComponentOutlet]="column.cellComponent"
+      [ngComponentOutletInjector]="cellContexInjector">
+      </ng-container>
     </div>
   `
 })
-export class DataTableBodyCellComponent implements DoCheck, OnDestroy {
+export class DataTableBodyCellComponent implements DoCheck, OnDestroy, OnInit {
   @Input() displayCheck: (row: any, column?: TableColumn, value?: any) => boolean;
 
   @Input() set group(group: any) {
@@ -247,6 +266,7 @@ export class DataTableBodyCellComponent implements DoCheck, OnDestroy {
     treeStatus: this.treeStatus,
     onTreeAction: this.onTreeAction.bind(this),
   };
+  cellContexInjector: Injector;
 
   private _isSelected: boolean;
   private _sorts: any[];
@@ -259,8 +279,23 @@ export class DataTableBodyCellComponent implements DoCheck, OnDestroy {
   private _element: any;
   private _treeStatus: TreeStatus;
 
-  constructor(element: ElementRef, private cd: ChangeDetectorRef) {
+  constructor(element: ElementRef, private cd: ChangeDetectorRef, private injector: Injector) {
     this._element = element.nativeElement;
+  }
+
+  ngOnInit(): void {
+    const customProviders =
+      !!this.column.customContext &&
+      !!this.column.customContext.cellProviders
+        ? this.column.customContext.cellProviders
+        : [];
+    this.cellContexInjector = Injector.create({
+      providers: [
+        { provide: DATATABLE_CELL_CONTEXT, useValue: this.cellContext },
+        ...customProviders
+      ],
+      parent: this.injector
+    });
   }
 
   ngDoCheck(): void {

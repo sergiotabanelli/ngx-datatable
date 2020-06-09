@@ -1,10 +1,16 @@
 import {
   Component, Input, EventEmitter, Output, HostBinding, 
-  HostListener, ChangeDetectionStrategy, ChangeDetectorRef
+  HostListener, ChangeDetectionStrategy, ChangeDetectorRef, InjectionToken, Injector, OnInit
 } from '@angular/core';
 import { SortDirection, SortType, SelectionType, TableColumn } from '../../types';
 import { nextSortDir } from '../../utils';
 import { MouseEvent } from '../../events';
+
+/**
+ * Injection token that used to pass the cell context to custom components.
+ */
+export const DATATABLE_HEADER_CELL_CONTEXT =
+    new InjectionToken<any>('datatable-header-cell-context');
 
 @Component({
   selector: 'datatable-header-cell',
@@ -25,7 +31,7 @@ import { MouseEvent } from '../../events';
         />
       </label>
       <span
-        *ngIf="!column.headerTemplate"
+        *ngIf="!column.headerTemplate && !column.headerComponent"
         class="datatable-header-cell-wrapper">
         <span
           class="datatable-header-cell-label draggable"
@@ -34,10 +40,15 @@ import { MouseEvent } from '../../events';
         </span>
       </span>
       <ng-template
-        *ngIf="column.headerTemplate"
+        *ngIf="column.headerTemplate && !column.headerComponent"
         [ngTemplateOutlet]="column.headerTemplate"
         [ngTemplateOutletContext]="cellContext">
       </ng-template>
+      <ng-container
+      *ngIf="column.headerComponent"
+      [ngComponentOutlet]="column.headerComponent"
+      [ngComponentOutletInjector]="headerContexInjector">
+      </ng-container>
       <span
         (click)="onSort()"
         [class]="sortClass">
@@ -50,7 +61,7 @@ import { MouseEvent } from '../../events';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class DataTableHeaderCellComponent {
+export class DataTableHeaderCellComponent implements OnInit {
 
   @Input() sortType: SortType;
   @Input() sortAscendingIcon: string;
@@ -137,7 +148,8 @@ export class DataTableHeaderCellComponent {
   @HostBinding('attr.title')
   get name(): string {
     // guaranteed to have a value by setColumnDefaults() in column-helper.ts
-    return this.column.headerTemplate === undefined ? this.column.name : undefined;
+    return this.column.headerTemplate === undefined && 
+      this.column.headerComponent === undefined ? this.column.name : undefined;
   }
 
   @HostBinding('style.minWidth.px')
@@ -173,11 +185,26 @@ export class DataTableHeaderCellComponent {
     allRowsSelected: this.allRowsSelected,
     selectFn: this.selectFn
   };
+  headerContexInjector: Injector;
 
   private _column: TableColumn;
   private _sorts: any[];
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(private cd: ChangeDetectorRef, private injector: Injector) {
+  }
+
+  ngOnInit() {
+    const customProviders =
+      !!this.column.customContext &&
+      !!this.column.customContext.headerProviders
+        ? this.column.customContext.headerProviders
+        : [];
+    this.headerContexInjector =
+        Injector.create({providers: [{provide: DATATABLE_HEADER_CELL_CONTEXT, 
+                                      useValue: this.cellContext}, ...customProviders], 
+                         parent: this.injector});
+
+  }
 
   @HostListener('contextmenu', ['$event'])
   onContextmenu($event: MouseEvent): void {

@@ -1,4 +1,4 @@
-import { PipeTransform } from '@angular/core';
+import { PipeTransform, Type, StaticProvider } from '@angular/core';
 import { ValueGetter } from '../utils/column-prop-getters';
 /**
  * Column property that indicates how to retrieve this column's
@@ -6,6 +6,24 @@ import { ValueGetter } from '../utils/column-prop-getters';
  * 'a.deep.value', 'normalprop', 0 (numeric)
  */
 export declare type TableColumnProp = string | number;
+/**
+ * Column custom context that can be use to inject providers
+ * to custom components or pass custom context values
+ */
+export interface CustomContext {
+    /**
+     * Providers for cells, summaries and treeToogles custom components
+     */
+    cellProviders?: StaticProvider[];
+    /**
+     * Providers for headers custom components
+     */
+    headerProviders?: StaticProvider[];
+    /**
+     * custom context values
+     */
+    [prop: string]: any;
+}
 /**
  * Column Type
  * @type {object}
@@ -152,6 +170,13 @@ export interface TableColumn {
      */
     cellTemplate?: any;
     /**
+     * Cell Component
+     *
+     * @type {*}
+     * @memberOf TableColumn
+     */
+    cellComponent?: Type<any>;
+    /**
      * Header template ref
      *
      * @type {*}
@@ -159,12 +184,26 @@ export interface TableColumn {
      */
     headerTemplate?: any;
     /**
+     * Header Component
+     *
+     * @type {*}
+     * @memberOf TableColumn
+     */
+    headerComponent?: Type<any>;
+    /**
      * Tree toggle template ref
      *
      * @type {*}
      * @memberOf TableColumn
      */
     treeToggleTemplate?: any;
+    /**
+     * Tree toggle  component
+     *
+     * @type {*}
+     * @memberOf TableColumn
+     */
+    treeToggleComponent?: Type<any>;
     /**
      * CSS Classes for the cell
      *
@@ -214,4 +253,18 @@ export interface TableColumn {
      * @memberOf TableColumn
      */
     summaryTemplate?: any;
+    /**
+     * Summary cell component
+     *
+     * @type {*}
+     * @memberOf TableColumn
+     */
+    summaryComponent?: Type<any>;
+    /**
+     * Column custom context
+     *
+     * @type {*}
+     * @memberOf TableColumn
+     */
+    customContext?: CustomContext;
 }

@@ -66,7 +66,10 @@ var NgxDatatableModule = /** @class */ (function () {
                 components_1.DataTableFooterTemplateDirective,
                 components_1.DatatableFooterDirective,
                 components_1.DataTablePagerComponent,
-                components_1.DatatableGroupHeaderTemplateDirective
+                components_1.DatatableGroupHeaderTemplateDirective,
+                components_1.DataTableHeaderComponent,
+                components_1.DataTableBodyComponent,
+                components_1.DataTableFooterComponent
             ]
         })
     ], NgxDatatableModule);

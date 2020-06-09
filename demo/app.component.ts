@@ -109,6 +109,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
             <ul>
               <li><a href="#inline" (click)="state='inline'">Inline</a></li>
               <li><a href="#templateref" (click)="state='templateref'">TemplateRef</a></li>
+              <li><a href="#customcell" (click)="state='customcell'">CustomCell</a></li>
             </ul>
           </li>
           <li>
@@ -129,6 +130,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
               <li><a href="#custom-template-summary" (click)="state='custom-template-summary'">Custom Template</a></li>
               <li><a href="#paging-summary" (click)="state='paging-summary'">Server-side paging</a></li>
               <li><a href="#inline-html-summary" (click)="state='inline-html-summary'">Inline HTML</a></li>
+              <li><a href="#custom-cell-summary" (click)="state='custom-cell-summary'">Custom cell Component</a></li>
             </ul>
           </li>
         </ul>
@@ -187,6 +189,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
         <!-- Templates -->
         <template-ref-demo *ngIf="state === 'templateref'"></template-ref-demo>
         <inline-templates-demo *ngIf="state === 'inline'"></inline-templates-demo>
+        <custom-cell-demo *ngIf="state === 'customcell'"></custom-cell-demo>
 
         <!-- Columns -->
         <column-flex-demo *ngIf="state === 'flex'"></column-flex-demo>
@@ -203,6 +206,8 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
         <summary-row-server-paging-demo *ngIf="state === 'paging-summary'">
         </summary-row-server-paging-demo>
         <summary-row-inline-html *ngIf="state === 'inline-html-summary'"></summary-row-inline-html>
+        <summary-row-custom-cell-demo *ngIf="state === 'custom-cell-summary'">
+        </summary-row-custom-cell-demo>
       </content>
     </div>
   `
