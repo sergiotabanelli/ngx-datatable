@@ -1,5 +1,61 @@
 # Changelog
 
+## 17.0.0
+
+- Chore: explicitly only suppot ng9
+
+## 16.1.1
+
+- Chore: Patch release to override 16.1.0
+
+## 16.1.0
+
+- Fix: [selectAllRowsOnPage] is broken. (#1809)
+- Fix: Bug when using cellClass as string. (#1817)
+- Fix: Docs. (#1812, #1837, #1845, #1854)
+- Fix: redraw after recalculate (#1816)
+- Fix: undefined row index for rows in groups (#1857)
+- Chore: Add pretty-quick as a precommit hook using husky (#1841)
+- Chore: Bump dependecies (#1858, #1862, #1859)
+
+## 16.0.3
+
+- Bug: Fix disappearing rows with vertical scrollbar, virtual scrolling & rowdetail auto height (#1799)
+- Bug: Fix memory leak due to created element not cleaned up (#1792)
+- Bug: do not collapse row details when row updated (#1778)
+
+## 16.0.2
+
+- Bug: Remove barrel files because ng-packagr doesn't work well with them
+
+## 16.0.1
+
+- Bug: Include styles, assets and themes in release
+
+## 16.0.0
+
+- Breaking: the release files are not under the `/release` folder any more. Also, paths to `themes` and `assets` have changed. If you are importing any assets or styles from the release folder, you would need to update the paths.
+- Chore: Migrates the project to angular-cli, making it compatible with Ivy (#1738)
+- Feature: Implements global module config via forRoot (#1688)
+- Feature: Colors of material style can be modified by target application (#1651)
+- Bug: Fixes Exception in scoller component destroy (#1685)
+- Bug: Fixes issue 1686: column resizing issue in force columns mode (no horizontal scroll) when container get smaller (#1687)
+- Docs: Updates demo pages (#1738)
+
+## 15.0.2
+
+- Fix: Fixes issue where footer pagination does not work when virtual scrolling is enabled (#1704)
+
+## 15.0.1
+
+- Fix: Fixes issue where using conditional templates would not render them (#1701)
+
+## 15.0.0
+
+- Breaking: Upgrade to angular 8 (#1697)
+- Fix: Module not found: Error: Can't resolve '.' (#1646)
+- Fix: trackByProp can't work. (#1622)
+
 ## 14.0.0
 
 - Breaking: Upgrade to angular 7
